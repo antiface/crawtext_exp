@@ -6,4 +6,4 @@
 *.csv
 *.yml
 .*
-
+/ouput
