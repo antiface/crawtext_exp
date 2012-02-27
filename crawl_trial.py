@@ -37,7 +37,7 @@ print 'path',path
 inlinks_min=int(parameters.get('inlinks_min',1))
 depth=int(parameters.get('depth',10))
 query=parameters.get('query','You really should enter a query, otherwise...')
-result_path=parameters.get('result_path','ouput')
+result_path=parameters.get('result_path','output')
 print 'query',query
 max_pages_number=int(parameters.get('max_pages_number',10000))
 if max_pages_number == 999999:

@@ -8,7 +8,7 @@ query='algues vertes AND sangliers'
 query='risk assessment'
 #query='biofuel'
 
-crawler=con=sqlite3.connect('ouput/'+query+'_crawl.db')
+crawler=con=sqlite3.connect('output/'+query+'_crawl.db')
 
 cur=con.execute("select urlid,domain from urlcorpus ")
 res=cur.fetchall()
@@ -30,7 +30,7 @@ print (len(pages)), ' web pages '
 print (len(unique(pages.values()))), ' unique sites '
 cur=con.execute("select fromid,toid from link ")
 links=cur.fetchall()
-output = open('ouput/net.csv','w')
+output = open('output/net.csv','w')
 num_links=0
 
 #for page in pages:
@@ -53,7 +53,7 @@ print len(link_list),'total unique links'
 
 cur=con.execute("select fromid,toid from link_whole ")
 links=cur.fetchall()
-output = open('ouput/net_whole.csv','w')
+output = open('output/net_whole.csv','w')
 num_links=0
 
 #for page in pages:
