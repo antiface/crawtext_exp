@@ -11,12 +11,12 @@
 # 
 
 from lxml import etree
-import urllib2
+import urllib
 import operator
 
 #url = "http://www.perdu.com/"
 url = 'http://www.lacuisinehelene.com/2012/02/pita-with-hummus-veggies-and-feta.html'
-root = etree.HTML(urllib2.urlopen(url).read())
+root = etree.HTML(urllib.urlopen(url).read())
 d = {}
 
 def print_path_of_elems(elem, elem_path=""):
