@@ -5,35 +5,27 @@
 # For CorText Project -- http://cortext.fr/
 # CC-BY-CA
 #
+# This script query a Seeks server ($seeks_node) and return a list of seeds URL to crawl
+# usage for debug : python ./make_seeds.py | tee log.txt && wc -l log.txt
 
 import json
-#import simplejson as json
 import urllib
 import pprint
 import sys
 
-## tweak a textmate bug
-#reload(sys) 
-#sys.setdefaultencoding("utf-8")
-##
+# tweak a textmate bug
+reload(sys) 
+sys.setdefaultencoding("utf-8")
+#
 
-#Big Request
-result = urllib.urlopen('http://67.23.28.136/search.php/search/txt/q=toto?output=json&rpp=400&expansion=100').read()
-#type(result)
-#Little Request
-#result = urllib.urlopen('http://www.seeks-project.info/search.php/search/txt/toto?output=json').read()
+num_results = 1000
+seeks_node = '67.23.28.136'
+result = '%s' % urllib.urlopen('http://%s/search.php/search/txt/q=volcan?output=json&rpp=%d&expansion=%d' % ( seeks_node, num_results, num_results )).read()
 
-#result_coded = unicode(result, errors='ignore')
-#print result_coded
-#print result_coded
+result_utf8 = unicode(result, errors='ignore')
 
-kary = json.loads(result)
+result_json = json.loads('%s' % result_utf8)
 
- 
-# pp = pprint.PrettyPrinter(indent=4)
-# pp.pprint(kary)
-# 
-
-for each in kary['snippets']:
+for each in result_json['snippets']:
 	print each['cite']
 
