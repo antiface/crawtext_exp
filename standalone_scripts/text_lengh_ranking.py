@@ -6,7 +6,7 @@
 # CC-BY-CA
 #
 # 
-# This script prints the content of the most frequent xpaths of a given webpage.
+# This script prints the xpath nodes with the more content
 # So far, this is absolutely USELESS :(
 # 
 
