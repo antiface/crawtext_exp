@@ -47,6 +47,7 @@ print_path_of_elems(root, root.tag)
 sorted_d = sorted(d.iteritems(), key=operator.itemgetter(1), reverse=True)
 # print sorted_d
 
+
 for each in sorted_d:
 	last_tag = each[0].split('/')[-1]
 	match = re.search('\<.*\>',last_tag)

@@ -1,12 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os, sys
-reload(sys) 
-sys.setdefaultencoding("utf-8")
+#
+#
+
+import os
+import sys
 import seachengine2
 import warnings
+import zipfile
+import yaml
 from library import *
 from  pattern import web
+
+reload(sys) 
+sys.setdefaultencoding("utf-8")
 
 warnings.filterwarnings("ignore")
 
@@ -18,7 +25,6 @@ global pattern_date_fr
 # except:
 # 	pass
 		
-import yaml
 try:
 	user_parameters=sys.argv[1]
 except:
@@ -26,6 +32,7 @@ except:
 
 parameters = yaml.load('\n'.join(open(user_parameters,'r').readlines()))
 print 'parameters',parameters
+
 try:
 	path = parameters['path']
 except:
@@ -44,8 +51,6 @@ if max_pages_number == 999999:
 	pass
 else:
 	max_pages_number=min(max_pages_number,100000)
-
-import sys, zipfile, os, os.path
 
 def unzip_file_into_dir(file, dir):
 	try:
