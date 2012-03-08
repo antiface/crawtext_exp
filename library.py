@@ -10,25 +10,20 @@
 #
 #
 
-
-
-
 import sys
 import sqlite3
 reload(sys) 
 sys.setdefaultencoding("utf-8")
 sys.path.append("../pylibrary")
-#sys.path.append("../pylibrary")
-sys.path.append('/Users/jean-philippecointet/Desktop/cortext/manager/scripts/pylibrary')
 import fonctions
 import os
 import re
 
 
 forbidden_sites=map(lambda x: x[:-1],open('forbidden_sites.txt','r').readlines())
-print 'forbidden_sites:	',forbidden_sites
+#print 'forbidden_sites:	',forbidden_sites
 forbidden_linktext=map(lambda x: (x[:-1]),open('forbidden_linktext.txt','r').readlines())
-print 'forbidden_linktext:	',forbidden_linktext
+#print 'forbidden_linktext:	',forbidden_linktext
 
 dateregexp=re.compile('(\d{4})-(\d{2})-(\d{2})')
 forbiden_site='('+')|('.join(forbidden_sites)+')'

@@ -454,7 +454,6 @@ class crawler:
 		#print 'pages',pages 
 		pagenumber=0
 		for i in range(depth):
-			
 			pages_clean = {}
 			for page,views in pages.iteritems():
 				pages_clean[equivalent.get(page,page)]=views

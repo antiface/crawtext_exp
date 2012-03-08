@@ -59,7 +59,6 @@ try:
 	path = parameters['path']
 except:
 	print 'invalid parameters file'
-	#??? where is corpus_file?
 	path=parameters['corpus_file']
 print 'Path: ', path
 
@@ -106,20 +105,22 @@ for fname in dirList[:]:
 		if 'Google Search' in pagelist:
 			 new_urls = map(lambda x:x.split("&amp;")[0],new_urls)
 		for new_url in new_urls[:]:
+			print "Checking for forbidden URL..."
 			if not check_forbidden((new_url,'')) and not new_url in pages:
 				pages[new_url]=inlinks_min
 	except:
 		pass
-print 'Pages init: ',len(pages)
-print 'Pages: ',pages
+print 'Pages init: ', len(pages)
+print 'Pages: ', pages
 
+print "Naming database..."
 db_name=os.path.join(result_path,query+'_crawl.db')
 
 
 try:	
 	os.mkdir(result_path)
 	os.remove(os.path.join(result_path,query+'_crawl.db'))
-	print 'Deleted: ',result_path+query+'_crawl.db'
+	print 'Deleted: ', result_path+query+'_crawl.db'
 except:
 	pass
 
@@ -127,7 +128,7 @@ crawler=seachengine2.crawler(db_name)
 try:
   crawler.createindextables()
 except:
-  print "Tables already exist, good"
+  print "Tables already exist, good."
 
 crawler.crawl(pages,query=query,inlinks=inlinks_min,depth=depth,max_pages_number=max_pages_number)
 exportcrawl2resolu(db_name,query,result_path)
