@@ -1,5 +1,18 @@
 #!/usr/bin/env python
 # encoding: utf-8
+#
+# Created by Jean-Philippe Cointet on 2011-12-28.
+# Copyright (c) 2011 __MyCompanyName__. All rights reserved.
+# Under MIT License (see ./LICENSE.txt)
+#
+#
+#
+#
+#
+
+
+
+
 import sys
 import sqlite3
 reload(sys) 
@@ -7,19 +20,11 @@ sys.setdefaultencoding("utf-8")
 sys.path.append("../pylibrary")
 #sys.path.append("../pylibrary")
 sys.path.append('/Users/jean-philippecointet/Desktop/cortext/manager/scripts/pylibrary')
-
-
 import fonctions
-
-"""
-library.py
-
-Created by Jean-Philippe Cointet on 2011-12-28.
-Copyright (c) 2011 __MyCompanyName__. All rights reserved.
-"""
-
 import os
 import re
+
+
 forbidden_sites=map(lambda x: x[:-1],open('forbidden_sites.txt','r').readlines())
 print 'forbidden_sites:	',forbidden_sites
 forbidden_linktext=map(lambda x: (x[:-1]),open('forbidden_linktext.txt','r').readlines())
