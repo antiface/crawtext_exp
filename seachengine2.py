@@ -89,7 +89,9 @@ user_agents = [
 
 
 def check_query(query,text):
+	print "Formatting query..."
 	if ' AND ' in query:
+		print "Splitting query using \"AND\"..."
 		queries=map(lambda x:x.lower(),query.split(' AND '))
 	else:
 		queries=[query]
@@ -158,26 +160,29 @@ class Webpage:
 def extract_data(package):
 	(page,query)=package
 	
-	#print page
+	print "Checking %s" % page
 	new_webpage=Webpage()
 	new_webpage.url=page
 	try:
 		url=web.URL(page)
 		mimetype=url.mimetype
 		new_webpage.mimetype=mimetype
-		if mimetype=='text/html':#only load Webpages!!!
-			domain = url.domain# u'domain.com'
+		print "Checking mimetype..."
+		if mimetype=='text/html':
+			print "Mimetype ok (text/html)"			#only load Webpages!!!
+			domain = url.domain				# u'domain.com'
 			url_feed=''
-			redirected_page=url.redirect# Actual URL after redirection, or None.		
+			redirected_page=url.redirect	# Actual URL after redirection, or None.		
 			path= url.path# [u'path']
 			# different options to open a webpage
+			print "Opening %s" %  page
 			html=url.download(user_agent=choice(user_agents),cached=False)
 			#html = urllib2.urlopen(page).read()
 		else:
-			#print 'bad mimetype',mimetype,page
+			print 'Wrong mimetype (not text/html)'
 			new_webpage.successful_open=True
 	except:
-		#print "*** Could not open page: %s" % page
+		print "Could not open page: %s" % page
 		new_webpage.successful_open=False
 	try:
 		if check_query(query,str(html)):#on s'assure d'abord que ça roule pour le full html
@@ -187,7 +192,9 @@ def extract_data(package):
 			try:
 				title = dom.by_tag('title')[0]		
 				title = repr(web.plaintext(title.content))
+				print "Setting page title to %s" % title
 			except:
+				print "No title found for %s" % page
 				title=''
 		
 		
