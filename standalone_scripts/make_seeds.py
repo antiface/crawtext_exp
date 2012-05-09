@@ -12,6 +12,13 @@ import json
 import urllib
 import pprint
 import sys
+import os
+import string
+
+# tweak a textmate bug
+reload(sys) 
+sys.setdefaultencoding("utf-8")
+#
 
 # tweak a textmate bug
 reload(sys) 
@@ -28,4 +35,3 @@ result_json = json.loads('%s' % result_utf8)
 
 for each in result_json['snippets']:
 	print each['cite']
-
