@@ -14,7 +14,7 @@ import sys
 import sqlite3
 reload(sys) 
 sys.setdefaultencoding("utf-8")
-sys.path.append("../pylibrary")
+#sys.path.append("../pylibrary")
 import fonctions
 import os
 import re
