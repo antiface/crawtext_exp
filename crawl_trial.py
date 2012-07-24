@@ -130,5 +130,5 @@ try:
 except:
   print "Tables already exist, good."
 
-crawler.crawl(pages,query=query,inlinks=inlinks_min,depth=depth,max_pages_number=max_pages_number)
+crawler.crawl(pages,query=query,inlinks=inlinks_min,depth=depth,max_pages_number=max_pages_number,citations_whole=0)
 exportcrawl2resolu(db_name,query,result_path)

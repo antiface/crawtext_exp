@@ -415,14 +415,17 @@ class crawler:
 		else:
 	  		return res[0]
 
-	def addtocorpus(self,webpage,table='urlcorpus'):
+	def addtocorpus(self,webpage,table='urlcorpus',citations_whole=0):
 		#print 'adding to corpus '+url
 		urlid=self.getentryid('urllist','url',webpage.url)
 		if 1:
 	  		try:
-				#self.con.execute("insert into urlcorpus(urlid,url,text_summary,html_summary,html,md5,title,domain,url_feed,links,charset) values ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (urlid,unicode(webpage.url),unicode(webpage.text_summary).replace("'","''"),unicode(webpage.html_summary).replace("'","''"),unicode(webpage.html).replace("'","''"),webpage.md5,unicode(webpage.title).replace("'","''"),webpage.domain,webpage.url_feed,'*#*'.join(webpage.links),webpage.charset))
-				self.con.execute("insert into urlcorpus(urlid,url,text_summary,html_summary,html,text_html,md5,title,domain,url_feed,links,charset,date) values ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (urlid,unicode(webpage.url),unicode(webpage.text_summary).replace("'","''"),unicode(webpage.html_summary).replace("'","''"),unicode(webpage.html).replace("'","''"),unicode(webpage.text_html).replace("'","''"),webpage.md5,unicode(webpage.title).replace("'","''"),webpage.domain,webpage.url_feed,'*#*'.join(webpage.links),webpage.charset,webpage.date))
-				#self.con.execute("insert into urlcorpus(urlid,html_summary) values ('%s','%s')" % (urlid,unicode(webpage.html_summary).replace("'","''")))
+				if citations_whole == 0:
+					#self.con.execute("insert into urlcorpus(urlid,url,text_summary,html_summary,html,md5,title,domain,url_feed,links,charset) values ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (urlid,unicode(webpage.url),unicode(webpage.text_summary).replace("'","''"),unicode(webpage.html_summary).replace("'","''"),unicode(webpage.html).replace("'","''"),webpage.md5,unicode(webpage.title).replace("'","''"),webpage.domain,webpage.url_feed,'*#*'.join(webpage.links),webpage.charset))
+					self.con.execute("insert into urlcorpus(urlid,url,text_summary,html_summary,html,text_html,md5,title,domain,url_feed,links,charset,date) values ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (urlid,unicode(webpage.url),unicode(webpage.text_summary).replace("'","''"),unicode(webpage.html_summary).replace("'","''"),unicode(webpage.html).replace("'","''"),unicode(webpage.text_html).replace("'","''"),webpage.md5,unicode(webpage.title).replace("'","''"),webpage.domain,webpage.url_feed,'*#*'.join(webpage.links),webpage.charset,webpage.date))
+					#self.con.execute("insert into urlcorpus(urlid,html_summary) values ('%s','%s')" % (urlid,unicode(webpage.html_summary).replace("'","''")))
+				elif citations_whole == 1:
+					self.con.execute("insert into urlcorpus(urlid,url,text_summary,html_summary,html,text_html,md5,title,domain,url_feed,links,charset,date) values ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (urlid,unicode(webpage.url),unicode(webpage.text_summary).replace("'","''"),unicode(webpage.html_summary).replace("'","''"),unicode(webpage.html).replace("'","''"),unicode(webpage.text_html).replace("'","''"),webpage.md5,unicode(webpage.title).replace("'","''"),webpage.domain,webpage.url_feed,'*#*'.join(webpage.links_whole),webpage.charset,webpage.date))
 			except:
 				print 'fail to execute',webpage.url
 				#webpage.display_page()
@@ -454,7 +457,7 @@ class crawler:
 		linkid=cur.lastrowid
 
 
-	def crawl(self,pages,query='',inlinks=1,depth=10,max_pages_number=10000000000000000):	
+	def crawl(self,pages,query='',inlinks=1,depth=10,max_pages_number=10000000000000000,citations_whole=0):
 		
 		equivalent={}
 		
@@ -527,7 +530,7 @@ class crawler:
 							#if pagenumber%20==0:
 							print pagenumber, 'th page recorded: ', current_webpage.url
 							self.addtoindex(current_webpage.url)
-							self.addtocorpus(current_webpage)
+							self.addtocorpus(current_webpage,citations_whole=citations_whole)
 							for link in current_webpage.links:
 								self.addlinkref(current_webpage.url,equivalent.get(link,link),'')				
 								pages[link]=pages.get(link,0)+1				 				
