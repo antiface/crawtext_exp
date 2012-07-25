@@ -10,11 +10,14 @@ import warnings
 import zipfile
 import yaml
 from library import *
+from library_exp import *
 from  pattern import web
 
 # tweak textmate/python bug on utf8
 reload(sys) 
 sys.setdefaultencoding("utf-8")
+
+seeks_search = 1
 
 def unzip_file_into_dir(file, dir):
 	try:
@@ -49,7 +52,7 @@ try:
 	print "Trying to read parameters from commandline..."
 	user_parameters=sys.argv[1]
 except:
-	print "Reading arguments from crawl_parameters.yml"
+	print "No commandline arguments. Reading parameters from crawl_parameters.yml..."
 	user_parameters='crawl_parameters.yml'
 
 parameters = yaml.load('\n'.join(open(user_parameters,'r').readlines()))
@@ -74,6 +77,7 @@ if parameters.has_key('query'):
 else:
 	sys.exit("You need to enter a query, otherwise...")
 
+
 result_path=parameters.get('result_path','output')
 print "Crawl output path (default is ./output/): ", result_path
 
@@ -93,9 +97,12 @@ if path[-4:]=='.zip':
 		path=corpus_out
 		print 'Path: ',path
 
+if seeks_search == 1:
+	print "Seeks search enabled. Creating Seeks file in %s" % path
+	make_seeds(query,path)
 
 dirList=os.listdir(path)
-print 'List of Pages in path: ',dirList
+print 'List of files in path: ',dirList
 for fname in dirList[:]:
 	pagelist =os.path.join(path,fname)
 	try:
