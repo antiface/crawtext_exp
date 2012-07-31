@@ -117,7 +117,7 @@ except IOError as e:
 # auth_handler.add_password(realm='None',
 #                           uri='https://api.datamarket.azure.com/Data.ashx/Bing/Search/v1',
 #                           user='ant1',
-#                           passwd='V70jWhb+WY2ykr9XyXSzXm8ubketalQVNBkAO+cIFTU=')
+#                           passwd='HIDDEN')
 # opener = urllib2.build_opener(auth_handler)
 # # ...and install it globally so it can be used with urlopen.
 # urllib2.install_opener(opener)

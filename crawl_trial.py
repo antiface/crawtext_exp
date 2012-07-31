@@ -17,7 +17,10 @@ from  pattern import web
 reload(sys) 
 sys.setdefaultencoding("utf-8")
 
-seeks_search = 1
+#config Seeks Search
+seeks_search = 1 	# 0 is off / 1 is on
+nb_results = 1 	# Set the number of results, Seeks yields usually less than asked
+
 
 def unzip_file_into_dir(file, dir):
 	try:
@@ -99,7 +102,7 @@ if path[-4:]=='.zip':
 
 if seeks_search == 1:
 	print "Seeks search enabled. Creating Seeks file in %s" % path
-	make_seeds(query,path)
+	make_seeds(query,path,nb_results=nb_results)
 
 dirList=os.listdir(path)
 print 'List of files in path: ',dirList

@@ -18,6 +18,9 @@ sys.setdefaultencoding("utf-8")
 import fonctions
 import os
 import re
+import json
+import urllib
+import string
 
 
 forbidden_sites=map(lambda x: x[:-1],open('forbidden_sites.txt','r').readlines())
@@ -197,3 +200,14 @@ def exportcrawl2resolu(db_crawl,query,result_path):
 			ix=whoosh_init.instantiate(result_path,mapping_complet,'isi',True,query)
 			whoosh_init.seed_se(ix,notices,'isi')
 	fonctions.insert_notices(db_resolu,True,notices,dico_tag,mapping_complet,corpus_name=query,output_type='reseaulu')
+
+def make_seeds(query,path,nb_results=1,expansion=1,lang="fr"):
+	seeks_file_name = "%s.seeks" % (query.replace(' ','_'))
+	seeks_file = open('%s/%s' % (path,seeks_file_name), 'w')
+	seeks_node = '67.23.28.136'
+	query_seeks = '%s' % urllib.urlopen('http://%s/search.php/search/txt/q=%s?lang=%s&output=json&rpp=%d&expansion=%d' % ( seeks_node, query.replace(' ','+'), lang, nb_results, expansion )).read()
+	result_utf8 = unicode(query_seeks, errors='ignore')
+	result_json = json.loads('%s' % result_utf8)
+	for each in result_json['snippets']:
+		seeks_file.write("%s\n" % (each["cite"]))
+	seeks_file.close()
