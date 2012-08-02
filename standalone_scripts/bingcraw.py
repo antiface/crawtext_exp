@@ -7,8 +7,8 @@ import pattern
 #from pybing import Bing
 import base64
 
-# reload(sys) 
-# sys.setdefaultencoding("utf-8")
+reload(sys) 
+sys.setdefaultencoding("utf-8")
 
 # uri_api = "https://api.datamarket.azure.com/Data.ashx/Bing/SearchWeb/v1/Web?$query=%27toto%27$top=50&$format=json"
 # 
@@ -16,7 +16,7 @@ import base64
 # 
 # urllib.urlopen(uri_api).read()
 
-# bing = Bing('V70jWhb+WY2ykr9XyXSzXm8ubketalQVNBkAO+cIFTU=')
+# bing = Bing('HIDDEN')
 # 
 # response = bing.search_web('python bing')
 # 
@@ -27,22 +27,24 @@ import base64
 # for result in results[:3]:
 # 	print repr(result['Title'])
 
+# http://stackoverflow.com/questions/11728256/urllib2-httperror-http-error-401-while-querying-using-the-new-bing-api-in-azu
+
 username = ''
 password = 'HIDDEN'
-#base64string = base64.encode('%s:%s' % (username,password) )
-query_url = 'https://api.datamarket.azure.com/Bing/Search/Web?Query=%27Algues%27&$top=10&$market="fr-FR"'
+base64string = base64.encodestring('%s:%s' % (username,password) )
+query_url = 'https://api.datamarket.azure.com/Bing/Search/Web?Query=%27Algues%27&$top=10&$format=JSON'
 
 query = urllib2.Request(query_url)
-# query.add_header("Authorization", "Basic %s" % base64string )
+query.add_header("Authorization", "Basic %s" % base64string )
 # query.add_header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1")
-query.add_header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-query.add_header("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.3")
-query.add_header("Accept-Encoding", "gzip,deflate,sdch")
-query.add_header("Accept-Language", "fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4")
-query.add_header("Authorization", "Basic base64.HIDDEN")
-query.add_header("Connection", "keep-alive")
-query.add_header("Host", "api.datamarket.azure.com")
-query.add_header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_4) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11")
+#query.add_header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+#query.add_header("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.3")
+#query.add_header("Accept-Encoding", "gzip,deflate,sdch")
+#query.add_header("Accept-Language", "fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4")
+#query.add_header("Authorization", "Basic HIDDEN")
+#query.add_header("Connection", "keep-alive")
+#query.add_header("Host", "api.datamarket.azure.com")
+#query.add_header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_4) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11")
 
 
 print "Query URL: ", query.get_full_url()
@@ -50,7 +52,7 @@ for each in query.header_items():
 	print each
 
 try:
-	print urllib2.urlopen(query).read()
+	print unicode(urllib2.urlopen(query).read(), errors='ignore')
 except IOError as e:
     if hasattr(e, 'reason'):
         print 'We failed to reach a server.'
