@@ -150,7 +150,7 @@ def crawl(urls_db, query, depth=10, crawl_round=0):
 		return urls_db	
 
 			
-#query_bing("Algues Vertes","VHIDDEN", nb_results=2)
+#query_bing("Algues Vertes","HIDDEN", nb_results=2)
 
 urls_db = {u'http://fr.wikipedia.org/wiki/Mar%C3%A9e_verte': {'outlink': set([]), 'parsed': 0, 'inlink': set([])}, u'http://fr.wikipedia.org/wiki/Algue_verte': {'outlink': set([]), 'parsed': 0, 'inlink': set([])}}
 
