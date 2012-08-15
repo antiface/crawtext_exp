@@ -31,25 +31,21 @@ class Page:
 		if extension(self.pattern.page) in unwanted_extensions:
 			return False
 		else:
-			if self.pattern.mimetype == 'text/html':
-				return True
+			return bool(self.pattern.mimetype == 'text/html')
 
 	def get_src(self):
 		self.src = URL(self.uri).open(user_agent=choice(user_agents)).read()
 
 	def is_relevant(self):
-		if re.search(query.replace(' ','.*'), self.src, re.IGNORECASE):
-			return True
-		else:
-			return False
+		return bool(re.search(query.replace(' ','.*'), self.src, re.IGNORECASE))
 
 	def get_outlinks(self):
 		for found_url in find_urls(self.src, unique=True):
-			if len(found_url.split('"')) > 1:				# Tweak Pattern bug on find_urls output format
+			if '"' in found_url:				# Tweak Pattern bug on find_urls output format
 				found_url = found_url.split('"')[0] 
-			if len(found_url.split(');')) > 1:				# IDEM
+			if ');' in found_url:				# IDEM
 				found_url = found_url.split(');')[0]
-			if len(found_url.split('#')) > 1:				# Strip Anchors
+			if '#' in found_url:				# Strip Anchors
 				found_url = found_url.split('#')[0]
 			self.outlinks.add(found_url)
 
@@ -57,18 +53,19 @@ class Page:
 def parse(url):
 	u = Page(url)
 	print u.uri
-	if u.check_mimetype():
-		u.get_src()
-	else:
+	# if u.check_mimetype() and u.get_src() and u.is_relevant() and u.get_outlinks():
+	# 	print u.outlinks
+	if not u.check_mimetype():
 		print '[LOG]:: The page %s is not HTML and won\'t be parsed: Discarded.' %  u.uri
 		return
-	if u.is_relevant():
-		u.get_outlinks()
-		print u.outlinks
-	else:
+	u.get_src()
+	if not u.is_relevant():
 		print '[LOG]:: The page %s doesn\'t seem relevant regarding the query: Discarded.' % u.uri
 		return
-
+	print '[LOG]:: The page %s is relevant.' % u.uri
+	u.get_outlinks()
+	print '%d parsed links: ' % len(u.outlinks)
+	print u.outlinks
 
 def crawl(seeds, query, depth=2):
 	print '[LOG]:: Starting Crawler with Depth set to %d' % depth
@@ -79,7 +76,6 @@ def crawl(seeds, query, depth=2):
 		t.start()
 
 
-	
 seeds = ['http://fr.wikipedia.org/wiki/Mar%C3%A9e_verte', 'http://www.perdu.com/','http://ant1.cc/files/diss_br.pdf']
 query = "Algues Vertes"
 
