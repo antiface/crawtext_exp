@@ -14,11 +14,17 @@ from lxml import etree
 import urllib
 import operator
 import re
+import sys
 
-#url = "http://www.perdu.com/"
+# tweak a textmate bug
+reload(sys) 
+sys.setdefaultencoding("utf-8")
+#
+
+url = "http://www.perdu.com/"
 #url = 'http://www.lacuisinehelene.com/2012/02/pita-with-hummus-veggies-and-feta.html'
 url ='http://www.lexpress.fr/actualite/sciences/sante/la-bonne-algue-verte_489903.html'
-url ='http://www.capital-terrain.fr/#'
+#url ='http://www.capital-terrain.fr/#'
 root = etree.HTML(urllib.urlopen(url).read())
 
 ### SAMPLE HTML 4 DEBUG
@@ -52,6 +58,7 @@ sorted_d = sorted(d.iteritems(), key=operator.itemgetter(1), reverse=True)
 
 max_len = sorted_d[0][1][0]
 print max_len
+print sorted_d
 
 for each in sorted_d:
 	#This IF is a random guess: needs more example to find a better way to select top of the dict

@@ -49,12 +49,28 @@ class Page:
 				found_url = found_url.split('#')[0]
 			self.outlinks.add(found_url)
 
+	def get_content_xpath(src):
+		src_xml = etree.HTML(src)
+		d = {}
+		def build_xpath(src_xml, src_xml_tag):
+			for child in src_xml:
+				if not child.getchildren() and child.text:
+					full_path = "/%s/%s" % (src_xml_tag, child.tag)
+					if d.has_key(full_path):
+						d[full_path] += [len(child.text)]
+					else:
+						d[full_path] = [len(child.text)]
+				else:
+					build_xpath(child, "%s/%s" % (src_xml_tag, child.tag))
+		build_xpath(src_xml, src_xml.tag)
+		d_average = {x: sum(d[x])/len(d[x]) for x in d}
+		d_sorted = sorted(d_average.iteritems(), key=operator.itemgetter(1), reverse=True)
+		xpath_ranking = [x for x in d_sorted if not any(_ in x[0] for _ in ['style', 'script'])]
+
 
 def parse(url):
 	u = Page(url)
 	print u.uri
-	# if u.check_mimetype() and u.get_src() and u.is_relevant() and u.get_outlinks():
-	# 	print u.outlinks
 	if not u.check_mimetype():
 		print '[LOG]:: The page %s is not HTML and won\'t be parsed: Discarded.' %  u.uri
 		return
