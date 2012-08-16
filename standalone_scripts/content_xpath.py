@@ -3,6 +3,7 @@ import urllib2
 import operator
 import re
 import sys
+from decruft import Document
 
 reload(sys) 
 sys.setdefaultencoding("utf-8")
@@ -33,17 +34,10 @@ class Content:
 		for i in range(1):
 			for path in self.xml_src.xpath(xpath_ranking[i][0]):
 				self.xpath += path.text
-		# print self.xpath
 
 	def get_content_decruft(self):
-		pass
+		self.decruft = Document(self.raw_src).summary()
 		
-# src = urllib2.urlopen('http://www.lexpress.fr/actualite/sciences/sante/la-bonne-algue-verte_489903.html').read()
-# src = urllib2.urlopen('http://www.lemonde.fr/technologies/article/2012/08/16/la-grande-bretagne-determinee-a-extrader-julian-assange_1746459_651865.html').read()
-src = urllib2.urlopen('http://wiki.fabelier.org/index.php?title=D3.js').read()
 
-
-test = Content(src)
-test.get_content_xpath()
 
 
