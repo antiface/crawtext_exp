@@ -17,6 +17,7 @@ import threading
 from decruft import Document
 import operator
 from lxml import etree
+import copy
 
 reload(sys) 
 sys.setdefaultencoding("utf-8")
@@ -113,14 +114,14 @@ class Page:
 
 def build_inlinks_clean_outlinks(posts):
 	viewed_urls = posts.keys()
+	posts_cp = copy.deepcopy(posts)
 	for each in posts:
 		for url in posts[each]['outlinks']:
 			if url in viewed_urls:
-				print "%s is an inlink %s" % (each, url)
-				posts[url]['inlinks'].add(each)
+				posts_cp[url]['inlinks'].add(each)
 			else:
-				print "%s was not parsed from %s" % (url, each)
-				posts[each]['outlinks'].remove(url)
+				posts_cp[each]['outlinks'].remove(url)
+	posts.update(posts_cp)
 
 def parse(url):
 	u = Page(url)
@@ -139,7 +140,6 @@ def parse(url):
 	# pp = pprint.PrettyPrinter(indent=4)
 	# pp.pprint(u.post)
 
-
 def crawl(seeds, query, depth=2):
 	print '[LOG]:: Starting Crawler with Depth set to %d' % depth
 	print '[LOG]:: Seeds are %s' % str(seeds)
@@ -153,6 +153,8 @@ seeds = ['http://fr.wikipedia.org/wiki/Mar%C3%A9e_verte', 'http://www.perdu.com/
 query = "Algues Vertes"
 
 crawl(seeds, query)
+
 build_inlinks_clean_outlinks(posts)
+
 pp = pprint.PrettyPrinter(indent=4)
 pp.pprint(posts)
