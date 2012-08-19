@@ -30,6 +30,8 @@ allowed_mimetypes = ['text/html']
 
 posts = {}
 
+i = 0
+
 class Content:
 	def __init__(self, src):
 		self.raw_src = src
@@ -54,7 +56,10 @@ class Content:
 		xpath_ranking = [x for x in d_sorted if not any(_ in x[0] for _ in ['style', 'script','built-in'])]
 		for i in range(1):
 			for path in self.xml_src.xpath(xpath_ranking[i][0]):
-				self.xpath += path.text
+				try:
+					self.xpath += path.text
+				except:
+					pass
 
 	def get_content_decruft(self):
 		self.decruft = Document(self.raw_src).summary()
@@ -105,10 +110,10 @@ class Page:
 		self.post['outlinks'] = self.outlinks
 		self.post['inlinks'] = self.inlinks
 		self.post['content'] = {}
-		# if self.content_xpath:
-		# 	self.post['content']['xpath'] = self.content_xpath
-		# if self.content_decruft:
-		# 	self.post['content']['decruft'] = self.content_decruft
+		if self.content_xpath:
+			self.post['content']['xpath'] = self.content_xpath
+		if self.content_decruft:
+			self.post['content']['decruft'] = self.content_decruft
 		posts[self.uri] = self.post
 
 
@@ -135,10 +140,8 @@ def parse(url):
 	print '[LOG]:: The page %s is relevant.' % u.uri
 	u.get_outlinks()
 	print '%d parsed links: ' % len(u.outlinks)
-	#u.select_content(['decruft','xpath'])
+	u.select_content(['decruft','xpath'])
 	u.build_post()
-	# pp = pprint.PrettyPrinter(indent=4)
-	# pp.pprint(u.post)
 
 def crawl(seeds, query, depth=2):
 	print '[LOG]:: Starting Crawler with Depth set to %d' % depth
