@@ -27,6 +27,7 @@ unwanted_extensions = ['css','js','gif','GIF','jpeg','JPEG','jpg','JPG','pdf','P
 
 allowed_mimetypes = ['text/html']
 
+posts = {}
 
 class Content:
 	def __init__(self, src):
@@ -62,6 +63,7 @@ class Page:
 	def __init__(self, uri):
 		self.uri = uri
 		self.outlinks = set()
+		self.inlinks = set()
 		self.pattern = URL(self.uri)
 
 	def check_mimetype(self):
@@ -100,13 +102,25 @@ class Page:
 		self.post['url'] = self.uri
 		self.post['src'] = self.src
 		self.post['outlinks'] = self.outlinks
+		self.post['inlinks'] = self.inlinks
 		self.post['content'] = {}
-		if self.content_xpath:
-			self.post['content']['xpath'] = self.content_xpath
-		if self.content_decruft:
-			self.post['content']['decruft'] = self.content_decruft
+		# if self.content_xpath:
+		# 	self.post['content']['xpath'] = self.content_xpath
+		# if self.content_decruft:
+		# 	self.post['content']['decruft'] = self.content_decruft
+		posts[self.uri] = self.post
 
 
+def build_inlinks_clean_outlinks(posts):
+	viewed_urls = posts.keys()
+	for each in posts:
+		for url in posts[each]['outlinks']:
+			if url in viewed_urls:
+				print "%s is an inlink %s" % (each, url)
+				posts[url]['inlinks'].add(each)
+			else:
+				print "%s was not parsed from %s" % (url, each)
+				posts[each]['outlinks'].remove(url)
 
 def parse(url):
 	u = Page(url)
@@ -120,10 +134,10 @@ def parse(url):
 	print '[LOG]:: The page %s is relevant.' % u.uri
 	u.get_outlinks()
 	print '%d parsed links: ' % len(u.outlinks)
-	u.select_content(['decruft','xpath'])
+	#u.select_content(['decruft','xpath'])
 	u.build_post()
-	pp = pprint.PrettyPrinter(indent=4)
-	pp.pprint(u.post)
+	# pp = pprint.PrettyPrinter(indent=4)
+	# pp.pprint(u.post)
 
 
 def crawl(seeds, query, depth=2):
@@ -133,9 +147,12 @@ def crawl(seeds, query, depth=2):
 	for url in seeds:
 		t = threading.Thread(None, parse, None, (url,))
 		t.start()
+		t.join()
 
-
-seeds = ['http://fr.wikipedia.org/wiki/Mar%C3%A9e_verte', 'http://www.perdu.com/','http://ant1.cc/files/diss_br.pdf']
+seeds = ['http://fr.wikipedia.org/wiki/Mar%C3%A9e_verte', 'http://www.perdu.com/','http://ant1.cc/files/diss_br.pdf','http://www.actu-environnement.com/ae/news/plan_algues_vertes_bretagne_8105.php4']
 query = "Algues Vertes"
 
 crawl(seeds, query)
+build_inlinks_clean_outlinks(posts)
+pp = pprint.PrettyPrinter(indent=4)
+pp.pprint(posts)
