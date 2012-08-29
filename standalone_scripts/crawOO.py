@@ -28,9 +28,12 @@ unwanted_extensions = ['css','js','gif','GIF','jpeg','JPEG','jpg','JPG','pdf','P
 
 allowed_mimetypes = ['text/html']
 
+new_seeds = set()
+next_seeds = set()
+
 posts = {}
 
-i = 0
+threads = []
 
 class Content:
 	def __init__(self, src):
@@ -139,20 +142,31 @@ def parse(url):
 		return
 	print '[LOG]:: The page %s is relevant.' % u.uri
 	u.get_outlinks()
+	global new_seeds
+	new_seeds = {x for x in u.outlinks if x not in posts.keys()}
+	global next_seeds
+	next_seeds = next_seeds.union(new_seeds)
 	print '%d parsed links: ' % len(u.outlinks)
 	u.select_content(['decruft','xpath'])
 	u.build_post()
 
-def crawl(seeds, query, depth=2):
+def crawl(seeds, query, depth=1):
 	print '[LOG]:: Starting Crawler with Depth set to %d' % depth
 	print '[LOG]:: Seeds are %s' % str(seeds)
 	print '[LOG]:: Query is "%s"' % query
-	for url in seeds:
-		t = threading.Thread(None, parse, None, (url,))
-		t.start()
-		t.join()
+	while depth >= 0:
+		for url in seeds:
+			t = threading.Thread(None, parse, None, (url,))
+			t.start()
+			threads.append(t)
+		for thread in threads:
+			thread.join()
+		seeds = {x for x in next_seeds if x not in posts.keys()}
+		next_seeds.clear()
+		depth -= 1
+		crawl(seeds, query, depth)
 
-seeds = ['http://fr.wikipedia.org/wiki/Mar%C3%A9e_verte', 'http://www.perdu.com/','http://ant1.cc/files/diss_br.pdf','http://www.actu-environnement.com/ae/news/plan_algues_vertes_bretagne_8105.php4']
+seeds = set(['http://fr.wikipedia.org/wiki/Mar%C3%A9e_verte', 'http://www.perdu.com/','http://ant1.cc/files/diss_br.pdf','http://www.actu-environnement.com/ae/news/plan_algues_vertes_bretagne_8105.php4'])
 query = "Algues Vertes"
 
 crawl(seeds, query)
