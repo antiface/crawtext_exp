@@ -109,7 +109,7 @@ class Page:
 	def build_post(self):
 		self.post = {}
 		self.post['url'] = self.uri
-		self.post['src'] = self.src
+		#self.post['src'] = self.src
 		self.post['outlinks'] = self.outlinks
 		self.post['inlinks'] = self.inlinks
 		self.post['content'] = {}
@@ -120,6 +120,21 @@ class Page:
 		posts[self.uri] = self.post
 
 
+def post_to_db(query, posts):
+	connection = Connection()
+	connection = Connection('localhost', 27017)
+
+	timestamp = ''
+	for each in time.localtime()[:]:
+		timestamp += str(each)
+
+	db = connection['crOOw']
+	collection_name = "%s_%s" % (query.replace(' ',''), timestamp)
+	collection = db['%s' % collection_name]
+	for post in posts:
+		collection.insert(posts[post])
+	
+
 def build_inlinks_clean_outlinks(posts):
 	viewed_urls = posts.keys()
 	posts_cp = copy.deepcopy(posts)
@@ -129,7 +144,9 @@ def build_inlinks_clean_outlinks(posts):
 				posts_cp[url]['inlinks'].add(each)
 			else:
 				posts_cp[each]['outlinks'].remove(url)
-	posts.update(posts_cp)
+	for each in posts:
+		posts[each]['inlinks'] = list(posts_cp[each]['inlinks'])
+		posts[each]['outlinks'] = list(posts_cp[each]['outlinks'])
 
 def parse(url):
 	u = Page(url)
@@ -150,7 +167,7 @@ def parse(url):
 	u.select_content(['decruft','xpath'])
 	u.build_post()
 
-def crawl(seeds, query, depth=1):
+def crawl(seeds, query, depth=2):
 	print '[LOG]:: Starting Crawler with Depth set to %d' % depth
 	print '[LOG]:: Seeds are %s' % str(seeds)
 	print '[LOG]:: Query is "%s"' % query
@@ -166,12 +183,15 @@ def crawl(seeds, query, depth=1):
 		depth -= 1
 		crawl(seeds, query, depth)
 
-seeds = set(['http://fr.wikipedia.org/wiki/Mar%C3%A9e_verte', 'http://www.perdu.com/','http://ant1.cc/files/diss_br.pdf','http://www.actu-environnement.com/ae/news/plan_algues_vertes_bretagne_8105.php4'])
+seeds = set([u'http://fr.wikipedia.org/wiki/Mar%C3%A9e_verte', u'http://www.perdu.com/','http://ant1.cc/files/diss_br.pdf',u'http://www.actu-environnement.com/ae/news/plan_algues_vertes_bretagne_8105.php4'])
 query = "Algues Vertes"
 
 crawl(seeds, query)
 
 build_inlinks_clean_outlinks(posts)
+
+post_to_db(query, posts)
+
 
 pp = pprint.PrettyPrinter(indent=4)
 pp.pprint(posts)
