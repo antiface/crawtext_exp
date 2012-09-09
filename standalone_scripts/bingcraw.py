@@ -24,6 +24,8 @@ user_agents = [u'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, l
 unwanted_extensions = ['css','js','gif','GIF','jpeg','JPEG','jpg','JPG','pdf','PDF','ico','ICO','png','PNG','dtd','DTD']
 urls_db = {}
 
+seeds = set()
+
 def query_bing(query_words, password, nb_results=10, market="fr-FR", username=''):
 	# Formatting username and password for HTTP headers 
 	base64string = base64.encodestring('%s:%s' % (username,password) )
@@ -67,39 +69,22 @@ def query_bing(query_words, password, nb_results=10, market="fr-FR", username=''
 
 	results_json = json.loads(results_utf8)
 	results = results_json['d']['results']
-	
-	# Logging results in Database
-	# Making list of Urls
-	
-	# list_url = []
-	# 
-	# connection = Connection()
-	# connection = Connection('localhost', 27017)
-	# 
-	# timestamp = ''
-	# for each in time.localtime()[:]:
-	# 	timestamp += str(each)
-	# 
-	# db = connection['crawbing']
-	# collection_name = "%s%s" % (query_words.replace(' ',''), timestamp)
-	# collection = db['%s' % collection_name]
 
 	results_json = json.loads(results_utf8)
 	results = results_json['d']['results']
 	print type(results)
-	print len(results)
 	for each in results:
-		urls_db[each['Url']] = {'inlink': set(), 'outlink': set(), 'parsed': 0}
-		# list_url.append(each['Url'])
-		# collection.insert(each)
-	print urls_db
-	return urls_db
-
-
-#extract Date
-#decruft
-#xpath
-# != inlink and insidelink
+		seeds.add(each['Url'])
+	print seeds
+	pp = pprint.PrettyPrinter(indent=4)
+	pp.pprint(results)
+	# print len(results)
+	# for each in results:
+	# 	urls_db[each['Url']] = {'inlink': set(), 'outlink': set(), 'parsed': 0}
+	# 	# list_url.append(each['Url'])
+	# 	# collection.insert(each)
+	# print urls_db
+	# return urls_db
 
 	
 def crawl(urls_db, query, depth=10, crawl_round=0):
@@ -150,9 +135,10 @@ def crawl(urls_db, query, depth=10, crawl_round=0):
 		return urls_db	
 
 			
-#query_bing("Algues Vertes","HIDDEN", nb_results=2)
-
-urls_db = {u'http://fr.wikipedia.org/wiki/Mar%C3%A9e_verte': {'outlink': set([]), 'parsed': 0, 'inlink': set([])}, u'http://fr.wikipedia.org/wiki/Algue_verte': {'outlink': set([]), 'parsed': 0, 'inlink': set([])}}
+query_bing("Algues Vertes","V70jWhb+WY2ykr9XyXSzXm8ubketalQVNBkAO+cIFTU=", nb_results=2)
 
 
-crawl(urls_db, 'Algues Vertes', depth=2)
+#urls_db = {u'http://fr.wikipedia.org/wiki/Mar%C3%A9e_verte': {'outlink': set([]), 'parsed': 0, 'inlink': set([])}, u'http://fr.wikipedia.org/wiki/Algue_verte': {'outlink': set([]), 'parsed': 0, 'inlink': set([])}}
+
+
+#crawl(urls_db, 'Algues Vertes', depth=2)
